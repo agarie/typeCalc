@@ -1,0 +1,36 @@
+<doctype html>
+<html>
+<head>
+	<title>typeCalc: Discover your weaknesses.</title>
+</head>
+<body>
+	
+	<form id="input">
+		<div id="pkmn1" class="pokemon">
+			<label for="type1">Type1:</label><input type="text" name="type1" value="normal" id="type1" />
+			<label for="type2">Type2:</label><input type="text" name="type2" id="type2" />
+		</div>
+		
+		<button id="getWeaknesses">Calculate!</button>
+	</form>
+	
+	<div id="output"></div>
+
+<script type="text/javascript" charset="utf-8" src="lib/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="src/typecalc.js"></script>
+<script type="text/javascript" charset="utf-8">
+// Create a loop that gets all the info from the UI
+	var start = function () {
+		var type1 = $("#input #pkmn1 #type1").val();
+		var type2 = $("#input #pkmn1 #type2").val();
+	
+		var def = TYPECALC.getArrayOfDefEffect(type1, type2);
+	
+		console.log(def);
+	};
+	
+	$("#input button").click(start);
+// Appends the result to the output div
+</script>
+</body>
+</html>
