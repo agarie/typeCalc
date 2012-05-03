@@ -1,5 +1,5 @@
 /*
-typeCalc: An app for analysing a pokemon team's type-based weaknesses
+typeCalc: An app for analysing a pokemon team's type-based weaknesses.
 @author Carlos "Onox" Agarie
 @version 0.1
 */
@@ -11,8 +11,8 @@ var TYPECALC = (function () {
 	// Organization: rows = attack, colums = defese
 	// Type order: normal, fire, water, electric, grass, ice, fighting, poison, ground, flying,
 	// psychic, bug, rock, ghost, dragon, dark, steel
-	var TYPES = ["normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison", "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel"],
-			TYPE_ORDER = {
+	var TYPES = ["normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison", "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel"];
+	var	TYPE_ORDER = {
 			normal: 0,
 			fire: 1,
 			water: 2,
@@ -30,8 +30,8 @@ var TYPECALC = (function () {
 			dragon: 14,
 			dark: 15,
 			steel: 16
-	},
-	    TYPE_CHART = {
+	};
+	var	TYPE_CHART = {
 			normal: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.5, 0, 1, 1, 0.5],
 		  fire: [1, 0.5, 0.5, 1, 2, 2, 1, 1, 1, 1, 1, 2, 0.5, 1, 0.5, 1, 2],
 		  water: [1, 2, 0.5, 1, 0.5, 1, 1, 1, 2, 1, 1, 1, 2, 1, 0.5, 1, 1],
@@ -51,121 +51,129 @@ var TYPECALC = (function () {
 		  steel: [1, 0.5, 0.5, 0.5, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 0.5]
 	};
 	
-	return {
-		// Return the effectiveness of attackType attacking defenseType
-		getEffect: function(attackType, defenseType) {
-			var defenseNumber = TYPE_ORDER[defenseType];
+	
+	// Return the effectiveness of attackType attacking defenseType
+	var	getEffect = function (attackType, defenseType) {
+		var defenseNumber = TYPE_ORDER[defenseType];
 
-			return TYPE_CHART[attackType][defenseNumber];
-		},
+		return TYPE_CHART[attackType][defenseNumber];
+	};
 		
-		printEffect: function (type, atkOrDef, matrix) {
-			var r = "",
-			    M = matrix || {};
-			
-			atkOrDef = atkOrDef || "atk";
-			
-			// matrix is used mainly for debugging, to see the order of 
-			if (atkOrDef === "atk" && M !== matrix) {
-				M = TYPE_CHART;
-			}
-			else if (M !== matrix) {
-				M = this.transpose(TYPE_CHART);
-			}
-			
-			for (var key in TYPE_ORDER) {
-				if (TYPE_ORDER.hasOwnProperty(key)) {
-					r += key + " " + M[type.toLowerCase()][TYPE_ORDER[key]];
-					r += "\n";
-				}
-			}
-			
-			return r.replace(/\n$/, "");
-		},
+	var	printEffect = function (type, atkOrDef, matrix) {
+		var r = "",
+		    M = matrix || {};
 		
-		// Return an array with the effectiveness of given attack type
-		getArrayOfAtkEffect: function (type) {
-			if (typeof type !== "string" || TYPE_CHART[type] === undefined) {
-				return false;
-			}
-			
-			return TYPE_CHART[type.toLowerCase()];
-		},
+		atkOrDef = atkOrDef || "atk";
 		
-		// Returns the effectiveness of all types attacking a type1/type2 pokemon
-		getArrayOfDefEffect: function (type1, type2) {
-			if (typeof type1 !== "string" || TYPE_CHART[type1] === undefined) {
-				return false;
-			}
-			
-			var TRANSPOSED_TYPE_CHART = this.transpose(TYPE_CHART),
-			    result = [],
-			    ary1 = TRANSPOSED_TYPE_CHART[type1.toLowerCase()],
-			    ary2 = (typeof type2 === "string" && type2.length > 0) ? TRANSPOSED_TYPE_CHART[type2.toLowerCase()] : [];
-			
-			result = this.dotProduct(ary1, ary2) || ary1;
-			
-			return result;
-		},
+		// matrix is used mainly for debugging, to see the order of 
+		if (atkOrDef === "atk" && M !== matrix) {
+			M = TYPE_CHART;
+		}
+		else if (M !== matrix) {
+			M = this.transpose(TYPE_CHART);
+		}
 		
-		// Assumes that the input is an object of arrays
-		transpose: function (matrix) {
-			if (typeof matrix !== "object") {
-				return false;
+		for (var key in TYPE_ORDER) {
+			if (TYPE_ORDER.hasOwnProperty(key)) {
+				r += key + " " + M[type.toLowerCase()][TYPE_ORDER[key]];
+				r += "\n";
 			}
-			
-			var m = 0,
-			    col = [],
-			    colName = [],
-			    transposed = {},
-			    i = 0;
-			
+		}
+		
+		return r.replace(/\n$/, "");
+	};
+		
+	// Return an array with the effectiveness of given attack type
+	var getArrayOfAtkEffect = function (type) {
+		if (typeof type !== "string" || TYPE_CHART[type] === undefined) {
+			return false;
+		}
+		
+		return TYPE_CHART[type.toLowerCase()];
+	};
+		
+	// Returns the effectiveness of all types attacking a type1/type2 pokemon
+	var getArrayOfDefEffect = function (type1, type2) {
+		if (typeof type1 !== "string" || TYPE_CHART[type1] === undefined) {
+			return false;
+		}
+		
+		var TRANSPOSED_TYPE_CHART = this.transpose(TYPE_CHART),
+		    result = [],
+		    ary1 = TRANSPOSED_TYPE_CHART[type1.toLowerCase()],
+		    ary2 = (typeof type2 === "string" && type2.length > 0) ? TRANSPOSED_TYPE_CHART[type2.toLowerCase()] : [];
+		
+		result = this.dotProduct(ary1, ary2) || ary1;
+		
+		return result;
+	};
+		
+	// Assumes that the input is an object of arrays
+	var	transpose = function (matrix) {
+		if (typeof matrix !== "object") {
+			return false;
+		}
+		
+		var m = 0,
+		    col = [],
+		    colName = [],
+		    transposed = {},
+		    i = 0;
+		
+		for (var key in matrix) {
+			if (matrix.hasOwnProperty(key)) {
+				colName.push(key);
+			}
+		}
+					
+		if (colName.length === 0) {
+			return false;
+		} 
+		else {
+			m = matrix[colName[0]].length;
+		}
+		
+		if (!m || m === undefined) {
+			return false;
+		}
+		
+		for (i = 0; i < m; i = i + 1) {
 			for (var key in matrix) {
 				if (matrix.hasOwnProperty(key)) {
-					colName.push(key);
+					col.push(matrix[key][i]);
 				}
 			}
-						
-			if (colName.length === 0) {
-				return false;
-			} 
-			else {
-				m = matrix[colName[0]].length;
-			}
 			
-			if (!m || m === undefined) {
-				return false;
-			}
-			
-			for (i = 0; i < m; i = i + 1) {
-				for (var key in matrix) {
-					if (matrix.hasOwnProperty(key)) {
-						col.push(matrix[key][i]);
-					}
-				}
-				
-				transposed[colName[i]] = col;
-				col = [];
-			}
-			
-			return transposed;
-		},
-		
-		// Element-wise multiplication of two arrays
-		dotProduct: function (u, v) {
-			if (u.length !== v.length) {
-				return false;
-			}
-			
-			var n = u.length,
-			    result = [],
-			    i;
-			
-			for (i = n; i > 0; i = i - 1) {
-				result[i-1] = u[i-1] * v[i-1];
-			}
-			
-			return result;
+			transposed[colName[i]] = col;
+			col = [];
 		}
+		
+		return transposed;
+	};
+		
+	// Element-wise multiplication of two arrays
+	var	dotProduct = function (u, v) {
+		if (u.length !== v.length) {
+			return false;
+		}
+		
+		var n = u.length,
+		    result = [],
+		    i;
+		
+		for (i = n; i > 0; i = i - 1) {
+			result[i-1] = u[i-1] * v[i-1];
+		}
+		
+		return result;
+	};
+	
+	return {
+		getEffect: getEffect,
+		printEffect: printEffect,
+		getArrayOfAtkEffect: getArrayOfAtkEffect,
+		getArrayOfDefEffect: getArrayOfDefEffect,
+		transpose: transpose,
+		dotProduct: dotProduct
 	};
 }());

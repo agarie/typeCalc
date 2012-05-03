@@ -1,0 +1,32 @@
+<html>
+<head>
+	<title>typeCalc: Discover your weakness.</title>
+</head>
+<body>
+
+	<form id="input">
+		<label for="type1">Type1:</label><input type="text" name="type1" id="type1" />
+		<label for="type2">Type2:</label><input type="text" name="type2" id="type2" />
+	</form>
+	
+	<button id="calculate">Calculate!</button>
+	
+	<div id="output"></div>
+
+<script type="text/javascript" charset="utf-8" src="./lib/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./src/typecalc.js"></script>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function () {
+		$("#calculate").click(function () {
+			var type_1 = $("#input input[name='type1']").val();
+			var type_2 = $("#input input[name='type2']").val();
+			
+			var def = TYPECALC.getEffect(type_1, type_2);
+			
+			// $("#output").html(def);
+			console.log(def);
+		});
+	});
+</script>
+</body>
+</html>
