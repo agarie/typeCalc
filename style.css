@@ -1,0 +1,30 @@
+.container {
+	width: 960px;
+	max-width: 1100px;
+	min-width: 800px;
+}
+
+.column {
+	margin-left: 5%;
+	margin-right: 5%;
+}
+
+.clear {
+	clear: both;
+}
+
+.center {
+ 	margin: 0 auto;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.center h1, .center h2, .center h3, .center h4, .center p {
+	text-align: center;
+}

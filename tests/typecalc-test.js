@@ -19,36 +19,36 @@ TestCase("TypeChartTest", {
 		assertUndefined(TYPECALC.TYPE_CHART);
 	},
 	
-	"test getEffect should return number": function() {
-		assertNumber(TYPECALC.getEffect(this.type1, this.type2));
-		assertNumber(TYPECALC.getEffect(this.type1, this.type3));
-		assertNumber(TYPECALC.getEffect(this.type2, this.type3));
+	"test effect should return number": function() {
+		assertNumber(TYPECALC.effect(this.type1, this.type2));
+		assertNumber(TYPECALC.effect(this.type1, this.type3));
+		assertNumber(TYPECALC.effect(this.type2, this.type3));
 	},
 	
-	"test getEffect should return 0, 0.5, 1 or 2": function() {
-		assertEquals(0, TYPECALC.getEffect(this.type5, this.type4));
-		assertEquals(0.5, TYPECALC.getEffect(this.type2, this.type1));
-		assertEquals(1, TYPECALC.getEffect(this.type1, this.type2));
-		assertEquals(2, TYPECALC.getEffect(this.type2, this.type3));
+	"test effect should return 0, 0.5, 1 or 2": function() {
+		assertEquals(0, TYPECALC.effect(this.type5, this.type4));
+		assertEquals(0.5, TYPECALC.effect(this.type2, this.type1));
+		assertEquals(1, TYPECALC.effect(this.type1, this.type2));
+		assertEquals(2, TYPECALC.effect(this.type2, this.type3));
 	},
 	
-	"test getArrayOfAtkEffect should return false if input isn't string of a valid type": function () {
-		assertFalse(TYPECALC.getArrayOfAtkEffect("invalid"));
-		assertFalse(TYPECALC.getArrayOfAtkEffect({}));
+	"test atkEffect should return false if input isn't string of a valid type": function () {
+		assertFalse(TYPECALC.atkEffect("invalid"));
+		assertFalse(TYPECALC.atkEffect({}));
 	},
 	
-	"test getArrayOfAtkEffect should return an array with length 17": function () {
-		assertNotUndefined(TYPECALC.getArrayOfAtkEffect("water").length);
-		assertEquals(17, TYPECALC.getArrayOfAtkEffect("poison").length);
+	"test atkEffect should return an array with length 17": function () {
+		assertNotUndefined(TYPECALC.atkEffect("water").length);
+		assertEquals(17, TYPECALC.atkEffect("poison").length);
 	},
 	
-	"test getArrayOfAtkEffect should return correct array for 1 type": function () {
-		assertEquals([1, 2, 1, 1, 1, 2, 0.5, 1, 0.5, 2, 1, 2, 1, 1, 1, 1, 0.5], TYPECALC.getArrayOfAtkEffect("rock"));
+	"test atkEffect should return correct array for 1 type": function () {
+		assertEquals([1, 2, 1, 1, 1, 2, 0.5, 1, 0.5, 2, 1, 2, 1, 1, 1, 1, 0.5], TYPECALC.atkEffect("rock"));
 	},
 	
 	"test getArrayOfDefEfect should return array": function () {
-		assertNotUndefined(TYPECALC.getArrayOfDefEffect("normal").length);
-		assertNotUndefined(TYPECALC.getArrayOfDefEffect("normal", "fire").length);
+		assertNotUndefined(TYPECALC.defEffect("normal").length);
+		assertNotUndefined(TYPECALC.defEffect("normal", "fire").length);
 	},
 	
 	"test transpose should return false if input isn't object": function () {

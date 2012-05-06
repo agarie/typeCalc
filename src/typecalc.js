@@ -1,12 +1,63 @@
 /*
-typeCalc: An app for analysing a pokemon team's type-based weaknesses.
+typeCalc: An app for analysing a pokémon team's type-based weaknesses.
 @author Carlos "Onox" Agarie
 @version 0.1
 */
 
 "use strict";
 
-var TYPECALC = (function () {
+var	TYPECALC = {
+	io: {},
+	calc: {},
+	engine: {},
+	calculate: function () {
+		var	t = this;
+		
+		// Implementation of the calc steps
+		$("#calculate").click(function () {
+			
+			t.io.walkTheTeam();
+		});
+	}
+};
+
+TYPECALC.io = (function () {
+	var	showResultsOnUi = function (damageTable) {
+		var base = '#typecalc ';
+		var output = '#output'; // Where the results are appended
+		var div = '<div id="output"></div>';
+		
+		// Zeroes the padding-bottom of #damagecalc to agree with div#output's
+		// CSS.
+		if (!$(base + output).length) {
+			$(base).css({
+				'padding-bottom': '0'
+			})
+			$(base).append(div);
+		}
+
+		// Do nothing if damageTable isn't a string.
+		if (typeof damageTable === 'string') {
+			$(base + output).html(damageTable);
+		}
+	};
+	
+	var	walkTheTeam = function () {
+		var pkmn = $("#typecalc .pokemon");
+		
+		$.each(pkmn, function(index, value) {
+			console.log(index + ": " + value.querySelector("input[name='type-1']").value + " / " + value.querySelector("input[name='type-2']").value)
+		});	
+	
+	};
+	
+	return {
+		showResultsOnUi: showResultsOnUi,
+		walkTheTeam: walkTheTeam
+	}
+}());
+
+TYPECALC.calc = (function () {
 	// TYPE_CHART: Constant object which stores the type-chart
 	// Organization: rows = attack, colums = defese
 	// Type order: normal, fire, water, electric, grass, ice, fighting, poison, ground, flying,
@@ -53,7 +104,7 @@ var TYPECALC = (function () {
 	
 	
 	// Return the effectiveness of attackType attacking defenseType
-	var	getEffect = function (attackType, defenseType) {
+	var	effect = function (attackType, defenseType) {
 		var defenseNumber = TYPE_ORDER[defenseType];
 
 		return TYPE_CHART[attackType][defenseNumber];
@@ -84,7 +135,7 @@ var TYPECALC = (function () {
 	};
 		
 	// Return an array with the effectiveness of given attack type
-	var getArrayOfAtkEffect = function (type) {
+	var atkEffect = function (type) {
 		if (typeof type !== "string" || TYPE_CHART[type] === undefined) {
 			return false;
 		}
@@ -93,7 +144,7 @@ var TYPECALC = (function () {
 	};
 		
 	// Returns the effectiveness of all types attacking a type1/type2 pokemon
-	var getArrayOfDefEffect = function (type1, type2) {
+	var defEffect = function (type1, type2) {
 		if (typeof type1 !== "string" || TYPE_CHART[type1] === undefined) {
 			return false;
 		}
@@ -169,10 +220,10 @@ var TYPECALC = (function () {
 	};
 	
 	return {
-		getEffect: getEffect,
+		effect: effect,
 		printEffect: printEffect,
-		getArrayOfAtkEffect: getArrayOfAtkEffect,
-		getArrayOfDefEffect: getArrayOfDefEffect,
+		atkEffect: atkEffect,
+		defEffect: defEffect,
 		transpose: transpose,
 		dotProduct: dotProduct
 	};

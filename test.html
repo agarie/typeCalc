@@ -1,31 +1,69 @@
 <html>
 <head>
 	<title>typeCalc: Discover your weakness.</title>
+	
+	<link rel="stylesheet" href="./style.css" type="text/css" media="screen" title="typeCalc" charset="utf-8">
 </head>
 <body>
+<div class='container center'>
+	<div id='typecalc'>
+		<form>			
+			<h2 class='center'>Pok&eacute;mon team</h2>
 
-	<form id="input">
-		<label for="type1">Type1:</label><input type="text" name="type1" id="type1" />
-		<label for="type2">Type2:</label><input type="text" name="type2" id="type2" />
-	</form>
-	
-	<button id="calculate">Calculate!</button>
-	
-	<div id="output"></div>
+			<ul class="column left">
+			
+				<li class="pokemon derp">
+					<label for="type-1"></label><input type="text" name="type-1" value="" id="type-1" />
+					<label for="type-2"></label><input type="text" name="type-2" value="" id="type-2" />
+				</li>
+			
+				<li class="pokemon">
+					<label for="type-1"></label><input type="text" name="type-1" value="" id="type-1" />
+					<label for="type-2"></label><input type="text" name="type-2" value="" id="type-2" />
+				</li>
+			
+				<li class="pokemon">
+					<label for="type-1"></label><input type="text" name="type-1" value="" id="type-1" />
+					<label for="type-2"></label><input type="text" name="type-2" value="" id="type-2" />
+				</li>
+			
+			</ul>
+			<ul class="column right">
+			
+				<li class="pokemon">
+					<label for="type-1"></label><input type="text" name="type-1" value="" id="type-1" />
+					<label for="type-2"></label><input type="text" name="type-2" value="" id="type-2" />
+				</li>
+			
+				<li class="pokemon">
+					<label for="type-1"></label><input type="text" name="type-1" value="" id="type-1" />
+					<label for="type-2"></label><input type="text" name="type-2" value="" id="type-2" />
+				</li>
+			
+				<li class="pokemon">
+					<label for="type-1"></label><input type="text" name="type-1" value="" id="type-1" />
+					<label for="type-2"></label><input type="text" name="type-2" value="" id="type-2" />
+				</li>
+				
+			</ul>			
+		</form>
+		
+		<div class="clear"></div>
+		
+		<div id="calculate">
+			<button id="calculate">Calculate!</button>
+		</div>
+		
+		<div class="clear"></div>
+		
+	</div> <!-- typecalc -->
+</div> <!-- container -->
 
 <script type="text/javascript" charset="utf-8" src="./lib/jquery.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="./src/typecalc.js"></script>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function () {
-		$("#calculate").click(function () {
-			var type_1 = $("#input input[name='type1']").val();
-			var type_2 = $("#input input[name='type2']").val();
-			
-			var def = TYPECALC.getEffect(type_1, type_2);
-			
-			// $("#output").html(def);
-			console.log(def);
-		});
+		TYPECALC.calculate();
 	});
 </script>
 </body>
