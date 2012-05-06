@@ -1,8 +1,8 @@
-typeCalc
-Author: Carlos Agarie
-Author URL: http://onox.com.br
-Version: 0.1
-License: MIT License
+typeCalc  
+Author: Carlos Agarie  
+Author URL: http://onox.com.br  
+Version: 0.1  
+License: MIT License  
 
 INTRODUCTION
 ============
@@ -23,9 +23,7 @@ Please, let me know if you find this project interesting in some way. :)
 TO DO
 =====
 
-+ Tests for DAMAGECALC.io
-+ Better name for DAMAGECALC.engine.meme
-+ Create documentation with JSDoc
++ LOTS OF STUFF LOL
 
 LICENSE
 =======
