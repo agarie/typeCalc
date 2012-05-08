@@ -12,21 +12,29 @@ var	TYPECALC = {
 	engine: {},
 	calculate: function () {
 		var	t = this;
+		var team = [], weaks = [], count = {};
 		
 		// Implementation of the calc steps
 		$("#calculate").click(function () {
 			
-			t.io.walkTheTeam();
+			team = t.io.walkTheTeam();
+			console.log(team);
+			weaks = t.calc.weaknesses(team);
+			console.log(weaks);
+			count = t.calc.reduceWeaknesses(weaks);
+			console.log(count);
+			t.io.showResultsOnUi("Resists: " + count.resistCount.toString() + "<br />", true);
+			t.io.showResultsOnUi("Weaknesses: " + count.weaknessCount.toString(), false);
 		});
 	}
 };
 
 TYPECALC.io = (function () {
-	var	showResultsOnUi = function (damageTable) {
+	var	showResultsOnUi = function (damageTable, overwrite) {
 		var base = '#typecalc ';
 		var output = '#output'; // Where the results are appended
 		var div = '<div id="output"></div>';
-		
+				
 		// Zeroes the padding-bottom of #damagecalc to agree with div#output's
 		// CSS.
 		if (!$(base + output).length) {
@@ -38,19 +46,32 @@ TYPECALC.io = (function () {
 
 		// Do nothing if damageTable isn't a string.
 		if (typeof damageTable === 'string') {
-			$(base + output).html(damageTable);
+			if (overwrite) {
+				$(base + output).html(damageTable);								
+			}
+			else {
+				$(base + output).html(function(index, oldHTML) {
+					return oldHTML + damageTable;
+				});
+			}
 		}
 	};
 	
 	var	walkTheTeam = function () {
 		var pkmn = $("#typecalc .pokemon");
+		var	type_1 = '', type_2 = '';
+		var team = [];
 		
 		$.each(pkmn, function(index, value) {
-			console.log(index + ": " + value.querySelector("input[name='type-1']").value + " / " + value.querySelector("input[name='type-2']").value)
-		});	
-	
+			type_1 = value.querySelector("input[name='type-1']").value;
+			type_2 = value.querySelector("input[name='type-2']").value;
+			
+			team.push([type_1, type_2]);
+		});
+		
+		return team;
 	};
-	
+		
 	return {
 		showResultsOnUi: showResultsOnUi,
 		walkTheTeam: walkTheTeam
@@ -59,7 +80,7 @@ TYPECALC.io = (function () {
 
 TYPECALC.calc = (function () {
 	// TYPE_CHART: Constant object which stores the type-chart
-	// Organization: rows = attack, colums = defese
+	// Organization: rows = attack, colums = defense
 	// Type order: normal, fire, water, electric, grass, ice, fighting, poison, ground, flying,
 	// psychic, bug, rock, ghost, dragon, dark, steel
 	var TYPES = ["normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison", "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel"];
@@ -101,64 +122,80 @@ TYPECALC.calc = (function () {
 		  dark: [1, 1, 1, 1, 1, 1, 0.5, 1, 1, 1, 2, 1, 1, 2, 1, 0.5, 0.5],
 		  steel: [1, 0.5, 0.5, 0.5, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 0.5]
 	};
-	
-	
-	// Return the effectiveness of attackType attacking defenseType
-	var	effect = function (attackType, defenseType) {
-		var defenseNumber = TYPE_ORDER[defenseType];
-
-		return TYPE_CHART[attackType][defenseNumber];
-	};
-		
-	var	printEffect = function (type, atkOrDef, matrix) {
-		var r = "",
-		    M = matrix || {};
-		
-		atkOrDef = atkOrDef || "atk";
-		
-		// matrix is used mainly for debugging, to see the order of 
-		if (atkOrDef === "atk" && M !== matrix) {
-			M = TYPE_CHART;
-		}
-		else if (M !== matrix) {
-			M = this.transpose(TYPE_CHART);
-		}
-		
-		for (var key in TYPE_ORDER) {
-			if (TYPE_ORDER.hasOwnProperty(key)) {
-				r += key + " " + M[type.toLowerCase()][TYPE_ORDER[key]];
-				r += "\n";
-			}
-		}
-		
-		return r.replace(/\n$/, "");
-	};
-		
-	// Return an array with the effectiveness of given attack type
-	var atkEffect = function (type) {
-		if (typeof type !== "string" || TYPE_CHART[type] === undefined) {
-			return false;
-		}
-		
-		return TYPE_CHART[type.toLowerCase()];
-	};
 		
 	// Returns the effectiveness of all types attacking a type1/type2 pokemon
-	var defEffect = function (type1, type2) {
+	var matchup = function (type1, type2) {
 		if (typeof type1 !== "string" || TYPE_CHART[type1] === undefined) {
 			return false;
 		}
 		
-		var TRANSPOSED_TYPE_CHART = this.transpose(TYPE_CHART),
+		var TRANSPOSED_TYPE_CHART = transpose(TYPE_CHART),
 		    result = [],
 		    ary1 = TRANSPOSED_TYPE_CHART[type1.toLowerCase()],
 		    ary2 = (typeof type2 === "string" && type2.length > 0) ? TRANSPOSED_TYPE_CHART[type2.toLowerCase()] : [];
 		
-		result = this.dotProduct(ary1, ary2) || ary1;
+		result = dotProduct(ary1, ary2) || ary1;
 		
 		return result;
 	};
+	
+	// Maps a team array, composed of arrays with 2 elements (strings defining
+	// types), into a weaknesses array, where each entry is returned from
+	// matchup(entry[0], entry[1]).
+	var	weaknesses = function (team) {
+		var ary = [];
+				
+		team.forEach(function (entry) {
+			ary.push(matchup(entry[0], entry[1]));
+		});
 		
+		return ary;
+	};
+	
+	// Maps an effectivity value (0, 0.25, 0.50, 1, 2, 4) to weaknessCount
+	// or resistCount.
+	var mapEffectivity = function (effectivity) {
+		switch (effectivity) {
+			case 0:
+			case 0.25:
+			case 0.50:
+				return "resistCount";
+			
+			case 1:
+				return undefined;
+			
+			case 2:
+			case 4:
+				return "weaknessCount"
+
+			default:
+				return undefined;
+		}
+	};
+	
+	// Reduces a weaknesses array into an array where each entry is an object
+	// with .weaknessCount and .resistCount properties.
+	var reduceWeaknesses = function (weaknesses) {
+		var count = {}; 
+		var typeOfCount = "";
+		
+		count.weaknessCount = []; 
+		count.resistCount = [];
+		
+		weaknesses.forEach(function(entry) {
+			entry.forEach(function(effect, index) {
+				typeOfCount = mapEffectivity(effect);
+				
+				if (typeOfCount) {
+					if (!count[typeOfCount][index]) { count[typeOfCount][index] = 0; }
+					count[typeOfCount][index] += 1;
+				}				
+			});
+		});
+		
+		return count;
+	};
+	
 	// Assumes that the input is an object of arrays
 	var	transpose = function (matrix) {
 		if (typeof matrix !== "object") {
@@ -205,7 +242,7 @@ TYPECALC.calc = (function () {
 	// Element-wise multiplication of two arrays
 	var	dotProduct = function (u, v) {
 		if (u.length !== v.length) {
-			return false;
+			return undefined;
 		}
 		
 		var n = u.length,
@@ -220,10 +257,10 @@ TYPECALC.calc = (function () {
 	};
 	
 	return {
-		effect: effect,
-		printEffect: printEffect,
-		atkEffect: atkEffect,
-		defEffect: defEffect,
+		matchup: matchup,
+		weaknesses: weaknesses,
+		mapEffectivity: mapEffectivity,
+		reduceWeaknesses: reduceWeaknesses,
 		transpose: transpose,
 		dotProduct: dotProduct
 	};
