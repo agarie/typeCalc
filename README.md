@@ -1,8 +1,8 @@
 typeCalc  
 Author: Carlos Agarie  
 Author URL: http://onox.com.br  
-Version: 0.1  
 License: MIT License  
+Version: 0.1  
 
 INTRODUCTION
 ============

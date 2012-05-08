@@ -11,21 +11,29 @@ var	TYPECALC = {
 	calc: {},
 	engine: {},
 	calculate: function () {
-		var	t = this;
 		var team = [], weaks = [], count = {};
 		
 		// Implementation of the calc steps
 		$("#calculate").click(function () {
 			
-			team = t.io.walkTheTeam();
-			console.log(team);
-			weaks = t.calc.weaknesses(team);
-			console.log(weaks);
-			count = t.calc.reduceWeaknesses(weaks);
-			console.log(count);
-			t.io.showResultsOnUi("Resists: " + count.resistCount.toString() + "<br />", true);
-			t.io.showResultsOnUi("Weaknesses: " + count.weaknessCount.toString(), false);
-		});
+			team = TYPECALC.io.walkTheTeam();
+			weaks = TYPECALC.calc.weaknesses(team);
+			count = TYPECALC.calc.reduceWeaknesses(weaks);
+			TYPECALC.io.showResultsOnUi("Resists: " + count.resistCount.toString() + "<br />", true);
+			TYPECALC.io.showResultsOnUi("Weaknesses: " + count.weaknessCount.toString(), false);			
+		});						
+	},
+	debug: function () {
+		var results = [];
+		var team = [], weaks = [], count = {};
+		
+		team = TYPECALC.io.walkTheTeam();
+		weaks = TYPECALC.calc.weaknesses(team);
+		count = TYPECALC.calc.reduceWeaknesses(weaks);
+		
+		console.log(team);
+		console.log(weaks);
+		console.log(count);		
 	}
 };
 
