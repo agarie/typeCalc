@@ -7,7 +7,7 @@ License: MIT License
 INTRODUCTION
 ============
 
-TypeCalc is a calculator made for the Pokémon games (all generations except RBY) to generate a report of how many weaknesses your team have, based on the traditional type chart.
+TypeCalc is a calculator made for the Pokémon games (all generations except RBY) used to generate a report of how many weaknesses your team have, based on the traditional type chart.
 
 The code uses strict mode and is tested with JsTestDriver. I intent to document it with JSDoc 3 in the future. I'm trying to tidy up the code as much as possible, as a means to improve my JavaScript skills. Please let me know if you have any suggestions.
 
