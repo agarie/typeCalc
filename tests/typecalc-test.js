@@ -13,6 +13,10 @@ TestCase("CalcTest", {
 		assertObject(this.calc);
 	},
 	
+	"test constant TYPES should be hidden": function () {
+		assertUndefined(this.calc.TYPES);
+	},
+	
 	"test constant TYPE_ORDER should be hidden": function() {
 		assertUndefined(this.calc.TYPE_ORDER);
 	},
@@ -23,8 +27,13 @@ TestCase("CalcTest", {
 	
 	"test matchup should return array": function () {
 		assertNotUndefined(this.calc.matchup("normal").length);
+		assertArray(this.calc.matchup("normal"));
+		
 		assertNotUndefined(this.calc.matchup("normal", "fire").length);
+		assertArray(this.calc.matchup("normal", "fire"));
 	},
+	
+	// weakness, mapEffectivity and reduceWeaknesses
 	
 	"test transpose should return false if input isn't object": function () {
 		assertFalse(this.calc.transpose([]));

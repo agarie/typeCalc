@@ -19,8 +19,8 @@ var	TYPECALC = {
 			team = TYPECALC.io.walkTheTeam();
 			weaks = TYPECALC.calc.weaknesses(team);
 			count = TYPECALC.calc.reduceWeaknesses(weaks);
-			TYPECALC.io.showResultsOnUi("Resists: " + count.resistCount.toString() + "<br />", true);
-			TYPECALC.io.showResultsOnUi("Weaknesses: " + count.weaknessCount.toString(), false);			
+			
+			TYPECALC.io.showResultsOnUi(TYPECALC.calc.print_table(count), true);
 		});						
 	},
 	debug: function () {
@@ -204,6 +204,27 @@ TYPECALC.calc = (function () {
 		return count;
 	};
 	
+	// Methods to count how many weaknesses/resists you have for each type
+	var print_table = function (count) {
+		var output = "";
+		
+		// Weaknesses list
+		output += "<ul><h2>Your team has some weaknesses...</h2>";
+		count.weaknessCount.forEach(function(entry, index) {
+			output += "<li>" + TYPES[index] + ": " + entry + "</li>";
+		});
+		output += "</ul>";
+		
+		// Resists list
+		output += "<ul><h2>And some resists...</h2>";
+		count.resistCount.forEach(function(entry, index) {
+			output += "<li>" + TYPES[index] + ": " + entry + "</li>";
+		});
+		output += "</ul>";
+		
+		return output;
+	};
+	
 	// Assumes that the input is an object of arrays
 	var	transpose = function (matrix) {
 		if (typeof matrix !== "object") {
@@ -269,6 +290,7 @@ TYPECALC.calc = (function () {
 		weaknesses: weaknesses,
 		mapEffectivity: mapEffectivity,
 		reduceWeaknesses: reduceWeaknesses,
+		print_table: print_table,
 		transpose: transpose,
 		dotProduct: dotProduct
 	};
