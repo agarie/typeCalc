@@ -131,38 +131,33 @@ TYPECALC.calc = (function () {
 		  steel: [1, 0.5, 0.5, 0.5, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 0.5]
 	};
 		
-	// Returns the effectiveness of all types attacking a type1/type2 pokemon
-	var matchup = function (type1, type2) {
+	// Return the effectiveness array of the type1/type2 pokemon
+	var matchup = function (types) {
+		var type1 = types[0];
+		var type2 = types[1];
+		
 		if (typeof type1 !== "string" || TYPE_CHART[type1] === undefined) {
 			return false;
 		}
 		
-		var TRANSPOSED_TYPE_CHART = transpose(TYPE_CHART),
-		    result = [],
-		    ary1 = TRANSPOSED_TYPE_CHART[type1.toLowerCase()],
-		    ary2 = (typeof type2 === "string" && type2.length > 0) ? TRANSPOSED_TYPE_CHART[type2.toLowerCase()] : [];
+		var TRANSPOSED_TYPE_CHART = transpose(TYPE_CHART);
+		var result = [];
+		var ary1 = TRANSPOSED_TYPE_CHART[type1.toLowerCase()];
+		var ary2 = (typeof type2 === "string" && type2.length > 0) ? TRANSPOSED_TYPE_CHART[type2.toLowerCase()] : [];
 		
 		result = dotProduct(ary1, ary2) || ary1;
 		
 		return result;
 	};
 	
-	// Maps a team array, composed of arrays with 2 elements (strings defining
-	// types), into a weaknesses array, where each entry is returned from
-	// matchup(entry[0], entry[1]).
+	// Return an array with matchup information
 	var	weaknesses = function (team) {
-		var ary = [];
-				
-		team.forEach(function (entry) {
-			ary.push(matchup(entry[0], entry[1]));
-		});
-		
-		return ary;
+		return team.map(matchup);
 	};
 	
 	// Maps an effectivity value (0, 0.25, 0.50, 1, 2, 4) to weaknessCount
 	// or resistCount.
-	var mapEffectivity = function (effectivity) {
+	var effectivityTable = function (effectivity) {
 		switch (effectivity) {
 			case 0:
 			case 0.25:
@@ -190,9 +185,11 @@ TYPECALC.calc = (function () {
 		count.weaknessCount = []; 
 		count.resistCount = [];
 		
+
+		
 		weaknesses.forEach(function(entry) {
 			entry.forEach(function(effect, index) {
-				typeOfCount = mapEffectivity(effect);
+				typeOfCount = effectivityTable(effect);
 				
 				if (typeOfCount) {
 					if (!count[typeOfCount][index]) { count[typeOfCount][index] = 0; }
@@ -203,20 +200,20 @@ TYPECALC.calc = (function () {
 		
 		return count;
 	};
-	
+		
 	// Methods to count how many weaknesses/resists you have for each type
 	var print_table = function (count) {
 		var output = "";
 		
 		// Weaknesses list
-		output += "<ul><h2>Your team has some weaknesses...</h2>";
+		output += "<ul class='left'><h2>Your team has some weaknesses...</h2>";
 		count.weaknessCount.forEach(function(entry, index) {
 			output += "<li>" + TYPES[index] + ": " + entry + "</li>";
 		});
 		output += "</ul>";
 		
 		// Resists list
-		output += "<ul><h2>And some resists...</h2>";
+		output += "<ul class='left'><h2>And some resists...</h2>";
 		count.resistCount.forEach(function(entry, index) {
 			output += "<li>" + TYPES[index] + ": " + entry + "</li>";
 		});
@@ -288,7 +285,7 @@ TYPECALC.calc = (function () {
 	return {
 		matchup: matchup,
 		weaknesses: weaknesses,
-		mapEffectivity: mapEffectivity,
+		effectivityTable: effectivityTable,
 		reduceWeaknesses: reduceWeaknesses,
 		print_table: print_table,
 		transpose: transpose,
