@@ -11,17 +11,16 @@ var	TYPECALC = {
 	calc: {},
 	engine: {},
 	calculate: function () {
-		var team = [], weaks = [], count = {};
+		var team = [], count = {};
 		
 		// Implementation of the calc steps
 		$("#calculate").click(function () {
 			
 			team = TYPECALC.io.walkTheTeam();
-			weaks = TYPECALC.calc.weaknesses(team);
-			count = TYPECALC.calc.effectCount(weaks);
+			count = TYPECALC.calc.typeCalc(team);
 			
-			TYPECALC.io.showResultsOnUi(TYPECALC.calc.print_table(count), true);
-		});						
+			TYPECALC.io.showResultsOnUi(count.toString());
+		});
 	},
 	debug: function () {
 		var results = [];
@@ -191,8 +190,8 @@ TYPECALC.calc = (function () {
 	// MapReduce fashion.
 	//
 	var	typeCalc = function (team, options) {
-		var opt = options || {};
 		var count;
+		options = options || {};
 		
 		count = team.map(matchup).map(effectCount);
 		

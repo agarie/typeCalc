@@ -53,6 +53,14 @@ TestCase("CalcTest", {
 		assertEquals(count, this.calc.effectCount(this.effectArray));
 	},
 	
+	"test typeCalc should work properly without options object": function () {
+		var team = [];
+		
+		team.concat(["fire", "dragon"]);
+
+		assertNotUndefined(this.calc.typeCalc(team));
+	},
+	
 	"test typeCalc should return an array if partialCount is true": function () {
 		var team = [];
 		
