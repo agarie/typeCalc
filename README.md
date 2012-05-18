@@ -2,7 +2,7 @@ typeCalc
 Author: Carlos Agarie  
 Author URL: http://onox.com.br  
 License: MIT License  
-Version: 0.1  
+Version: 0.2  
 
 INTRODUCTION
 ============

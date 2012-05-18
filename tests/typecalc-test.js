@@ -7,6 +7,8 @@ TestCase("CalcTest", {
 		this.type3 = "ice";
 		this.type4 = "ghost";
 		this.type5 = "normal";
+		
+		this.effectArray = [1, 0.5, 2, 1, 0.5, 0.5, 1, 1, 2, 1, 1, 0.5, 2, 1, 1, 1, 0.5];
 	},
 	
 	"test calc.calc should be an object": function () {
@@ -26,14 +28,51 @@ TestCase("CalcTest", {
 	},
 	
 	"test matchup should return array": function () {
-		assertNotUndefined(this.calc.matchup("normal").length);
-		assertArray(this.calc.matchup("normal"));
+		assertNotUndefined(this.calc.matchup(["water"]).length);
+		assertArray(this.calc.matchup(["water"]));
 		
-		assertNotUndefined(this.calc.matchup("normal", "fire").length);
-		assertArray(this.calc.matchup("normal", "fire"));
+		assertNotUndefined(this.calc.matchup(["normal", "psychic"]).length);
+		assertArray(this.calc.matchup(["normal", "psychic"]));
 	},
 	
-	// weakness, mapEffectivity and reduceWeaknesses
+	"test matchup should return correct effectiveness array": function () {
+		assertEquals(this.effectArray, this.calc.matchup(["fire"]));
+	},
+	
+	"test effectCount should return object": function () {
+		assertObject(this.calc.effectCount(this.effectArray));
+	},
+	
+	"test effectCount should return obj with non-zero properties": function () {
+		var count = {
+			halfEffect: 5,
+			normalEffect: 9,
+			doubleEffect: 3,
+		};
+		
+		assertEquals(count, this.calc.effectCount(this.effectArray));
+	},
+	
+	"test typeCalc should return an array if partialCount is true": function () {
+		var team = [];
+		
+		for (var i = 0; i < 6; i++) {
+			team.concat(this.effectArray);
+		}
+
+		assertArray(this.calc.typeCalc(team, { partialCount: true }));
+	},
+	
+	"test typeCalc should return an obj if partialCount isn't true": function () {
+		var team = [];
+		
+		for (var i = 0; i < 6; i++) {
+			team.concat(this.effectArray);
+		}
+
+		assertObject(this.calc.typeCalc(team, { partialCount: false }));
+		assertObject(this.calc.typeCalc(team, { partialCount: undefined }));
+	},
 	
 	"test transpose should return false if input isn't object": function () {
 		assertFalse(this.calc.transpose([]));

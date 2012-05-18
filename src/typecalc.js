@@ -1,7 +1,7 @@
 /*
 typeCalc: An app for analysing a pokémon team's type-based weaknesses.
 @author Carlos "Onox" Agarie
-@version 0.1
+@version 0.2
 */
 
 "use strict";
@@ -18,7 +18,7 @@ var	TYPECALC = {
 			
 			team = TYPECALC.io.walkTheTeam();
 			weaks = TYPECALC.calc.weaknesses(team);
-			count = TYPECALC.calc.reduceWeaknesses(weaks);
+			count = TYPECALC.calc.effectCount(weaks);
 			
 			TYPECALC.io.showResultsOnUi(TYPECALC.calc.print_table(count), true);
 		});						
@@ -29,7 +29,7 @@ var	TYPECALC = {
 		
 		team = TYPECALC.io.walkTheTeam();
 		weaks = TYPECALC.calc.weaknesses(team);
-		count = TYPECALC.calc.reduceWeaknesses(weaks);
+		count = TYPECALC.calc.effectCount(weaks);
 		
 		console.log(team);
 		console.log(weaks);
@@ -131,7 +131,8 @@ TYPECALC.calc = (function () {
 		  steel: [1, 0.5, 0.5, 0.5, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 0.5]
 	};
 		
-	// Return the effectiveness array of the type1/type2 pokemon
+	// Returns the effectiveness array of the type1/type2 pokemon.
+	//
 	var matchup = function (types) {
 		var type1 = types[0];
 		var type2 = types[1];
@@ -150,78 +151,64 @@ TYPECALC.calc = (function () {
 		return result;
 	};
 	
-	// Return an array with matchup information
-	var	weaknesses = function (team) {
-		return team.map(matchup);
-	};
-	
-	// Maps an effectivity value (0, 0.25, 0.50, 1, 2, 4) to weaknessCount
-	// or resistCount.
+	// Converts an effectivity value to its corresponding string.
+	//
 	var effectivityTable = function (effectivity) {
 		switch (effectivity) {
-			case 0:
-			case 0.25:
-			case 0.50:
-				return "resistCount";
+			case 0: return "noEffect";
 			
-			case 1:
-				return undefined;
-			
-			case 2:
-			case 4:
-				return "weaknessCount"
+			case 0.25: return "quarterEffect";
+			case 0.50: return "halfEffect";
 
-			default:
-				return undefined;
+			case 1: return "normalEffect";
+
+			case 2: return "doubleEffect";
+			case 4: return "quadEffect";
+
+			default: return undefined;
 		}
 	};
 	
-	// Reduces a weaknesses array into an array where each entry is an object
-	// with .weaknessCount and .resistCount properties.
-	var reduceWeaknesses = function (weaknesses) {
-		var count = {}; 
-		var typeOfCount = "";
+	// Converts a weakness array into an object made with the number of
+	// weaks/resists. For example:
+	//
+	// [2, 0.5, 4, ...] => {"normalEffect": 3, "quadEffect": 2, ...}
+	//
+	var effectCount = function (effectivenessArray) {
+		var count = {};
 		
-		count.weaknessCount = []; 
-		count.resistCount = [];
-		
-
-		
-		weaknesses.forEach(function(entry) {
-			entry.forEach(function(effect, index) {
-				typeOfCount = effectivityTable(effect);
-				
-				if (typeOfCount) {
-					if (!count[typeOfCount][index]) { count[typeOfCount][index] = 0; }
-					count[typeOfCount][index] += 1;
-				}				
-			});
+		// An example of weakness is [1, 0.25, 0.5, 4, 2, 4, ...].
+		effectivenessArray.forEach(function (current) {
+			var eff = effectivityTable(current);
+			
+			count[eff] = count[eff] + 1 || 1;
 		});
 		
 		return count;
 	};
+
+	// Implements the functions for getting the weaks/resists count through a
+	// MapReduce fashion.
+	//
+	var	typeCalc = function (team, options) {
+		var opt = options || {};
+		var count;
 		
-	// Methods to count how many weaknesses/resists you have for each type
-	var print_table = function (count) {
-		var output = "";
+		count = team.map(matchup).map(effectCount);
 		
-		// Weaknesses list
-		output += "<ul class='left'><h2>Your team has some weaknesses...</h2>";
-		count.weaknessCount.forEach(function(entry, index) {
-			output += "<li>" + TYPES[index] + ": " + entry + "</li>";
-		});
-		output += "</ul>";
+		// Stop here if the total weaks/resists of the team aren't needed.
+		if (options.partialCount) return count;
 		
-		// Resists list
-		output += "<ul class='left'><h2>And some resists...</h2>";
-		count.resistCount.forEach(function(entry, index) {
-			output += "<li>" + TYPES[index] + ": " + entry + "</li>";
-		});
-		output += "</ul>";
-		
-		return output;
+		// Else, sum all the weaks/resists.
+		return count.reduce(function (acc, el) {
+													for (var prop in el) {
+														if (el.hasOwnProperty(prop)) {
+															acc[prop] = acc[prop] + el[prop] || el[prop];
+														}
+													}
+												}, {});
 	};
-	
+		
 	// Assumes that the input is an object of arrays
 	var	transpose = function (matrix) {
 		if (typeof matrix !== "object") {
@@ -284,10 +271,9 @@ TYPECALC.calc = (function () {
 	
 	return {
 		matchup: matchup,
-		weaknesses: weaknesses,
 		effectivityTable: effectivityTable,
-		reduceWeaknesses: reduceWeaknesses,
-		print_table: print_table,
+		effectCount: effectCount,
+		typeCalc: typeCalc,
 		transpose: transpose,
 		dotProduct: dotProduct
 	};
