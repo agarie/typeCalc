@@ -193,18 +193,21 @@ TYPECALC.calc = (function () {
 		var count;
 		options = options || {};
 		
+		// Count is the number of weaks/resists of each pokémon.
 		count = team.map(matchup).map(effectCount);
-		
+				
 		// Stop here if the total weaks/resists of the team aren't needed.
 		if (options.partialCount) return count;
 		
-		// Else, sum all the weaks/resists.
+		// Else, sum all of them.
 		return count.reduce(function (acc, el) {
 													for (var prop in el) {
 														if (el.hasOwnProperty(prop)) {
 															acc[prop] = acc[prop] + el[prop] || el[prop];
 														}
 													}
+													
+													return acc;
 												}, {});
 	};
 		
