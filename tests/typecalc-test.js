@@ -64,7 +64,7 @@ TestCase("CalcTest", {
 	"test typeCalc should return an array if partialCount is true": function () {
 		var team = [];
 		
-		for (var i = 0; i < 6; i++) {
+		for (var i = 0; i < 6; i++) {`
 			team.concat(this.effectArray);
 		}
 

@@ -11,28 +11,36 @@ var	TYPECALC = {
 	calc: {},
 	engine: {},
 	calculate: function () {
-		var team = [], count = {};
+		var team = [], totalResistsAndWeaks = {};
+		var report = '';
 		
 		// Implementation of the calc steps
-		$("#calculate").click(function () {
-			
-			team = TYPECALC.io.walkTheTeam();
-			count = TYPECALC.calc.typeCalc(team);
-			
-			TYPECALC.io.showResultsOnUi(count.toString());
-		});
+		team = TYPECALC.io.walkTheTeam();
+		
+		totalResistsAndWeaks = TYPECALC.calc.typeCalc(team);
+		console.log(totalResistsAndWeaks);
+		//report = TYPECALC.io.createReport(totalResistsAndWeaks);
+		
+		//TYPECALC.io.showResultsOnUi(report);
 	},
 	debug: function () {
-		var results = [];
-		var team = [], weaks = [], count = {};
+		var team = [], matchup = [], effectCount = [], count = {};
 		
 		team = TYPECALC.io.walkTheTeam();
-		weaks = TYPECALC.calc.weaknesses(team);
-		count = TYPECALC.calc.effectCount(weaks);
 		
+		// These are the steps which calc.typeCalc() do.
+		matchup = team.map(TYPECALC.calc.matchup);
+		effectCount = matchup.map(TYPECALC.calc.effectCount);
+		count = effectCount.reduce(TYPECALC.calc.sumEffectiveness, {});
+		
+		console.log("Team");
 		console.log(team);
-		console.log(weaks);
-		console.log(count);		
+		console.log("Arrays of matchups");
+		console.log(matchup);
+		console.log("Each pokémon's effects count");
+		console.log(effectCount);
+		console.log("Final result (total effects count)");
+		console.log(count);
 	}
 };
 
@@ -78,7 +86,11 @@ TYPECALC.io = (function () {
 		
 		return team;
 	};
+	
+	var createReport = function (totalResistsAndWeaks) {
 		
+	};
+	
 	return {
 		showResultsOnUi: showResultsOnUi,
 		walkTheTeam: walkTheTeam
@@ -186,29 +198,36 @@ TYPECALC.calc = (function () {
 		return count;
 	};
 
+	// Used to simplify typeCalc's code. Accumulates the properties of el into
+	// acc, setting their initial value to el's if they're undefined.
+	//
+	var sumEffectiveness = function (acc, el) {
+		for (var prop in el) {
+			if (el.hasOwnProperty(prop)) {
+				acc[prop] = acc[prop] + el[prop] || el[prop];
+			}
+		}
+	
+		return acc;
+	};
+
 	// Implements the functions for getting the weaks/resists count through a
 	// MapReduce fashion.
 	//
 	var	typeCalc = function (team, options) {
 		var count;
 		options = options || {};
-		
+
 		// Count is the number of weaks/resists of each pokémon.
-		count = team.map(matchup).map(effectCount);
-				
+		count = team.map(matchup).filter(function (el) {
+			return el;
+		}).map(effectCount);
+
 		// Stop here if the total weaks/resists of the team aren't needed.
 		if (options.partialCount) return count;
 		
 		// Else, sum all of them.
-		return count.reduce(function (acc, el) {
-													for (var prop in el) {
-														if (el.hasOwnProperty(prop)) {
-															acc[prop] = acc[prop] + el[prop] || el[prop];
-														}
-													}
-													
-													return acc;
-												}, {});
+		return count.reduce(sumEffectiveness, {});
 	};
 		
 	// Assumes that the input is an object of arrays
@@ -273,10 +292,16 @@ TYPECALC.calc = (function () {
 	
 	return {
 		matchup: matchup,
-		effectivityTable: effectivityTable,
 		effectCount: effectCount,
+		sumEffectiveness: sumEffectiveness,
 		typeCalc: typeCalc,
 		transpose: transpose,
 		dotProduct: dotProduct
 	};
 }());
+
+$(document).ready(function () {
+	$("#typecalc button#calculate").click(function () {
+		TYPECALC.calculate();
+	});
+});
