@@ -88,7 +88,28 @@ TYPECALC.io = (function () {
 	};
 	
 	var createReport = function (totalResistsAndWeaks) {
+		var report = '';
+		var total = totalResistsAndWeaks;
 		
+		// Must create a table with: noEffect, quarterEffect,
+		// halfEffect, normalEffect, doubleEffect and quadEffect
+		// If it's undefined, put the value 0.
+		
+		report += "<table>";
+		
+		report += total.noEffect ? total.noEffect : 0;
+		
+		report += total.quarterEffect ? total.quarterEffect : 0;
+		
+		report += total.halfEffect ? total.halfEffect : 0;
+		
+		report += total.normalEffect ? total.normalEffect : 0;
+		
+		report += total.doubleEffect ? total.doubleEffect : 0;
+		
+		report += total.quadEffect ? total.quadEffect : 0;
+		
+		report += "</table>";
 	};
 	
 	return {
@@ -213,6 +234,10 @@ TYPECALC.calc = (function () {
 
 	// Implements the functions for getting the weaks/resists count through a
 	// MapReduce fashion.
+	// 
+	// The output is an object which the keys are noEffect, quarterEffect,
+	// halfEffect, normalEffect, doubleEffect and quadEffect. The values are the
+	// total number of occurences of each.
 	//
 	var	typeCalc = function (team, options) {
 		var count;
