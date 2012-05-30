@@ -16,29 +16,35 @@ var	TYPECALC = {
 		
 		// Implementation of the calc steps
 		team = TYPECALC.io.walkTheTeam();
-		
+				
 		totalResistsAndWeaks = TYPECALC.calc.typeCalc(team);
-		console.log(totalResistsAndWeaks);
-		//report = TYPECALC.io.createReport(totalResistsAndWeaks);
+		report = TYPECALC.io.createReport(totalResistsAndWeaks);
 		
-		//TYPECALC.io.showResultsOnUi(report);
+		TYPECALC.io.showResultsOnUi(report, true);
 	},
 	debug: function () {
 		var team = [], matchup = [], effectCount = [], count = {};
 		
 		team = TYPECALC.io.walkTheTeam();
-		
-		// These are the steps which calc.typeCalc() do.
-		matchup = team.map(TYPECALC.calc.matchup);
-		effectCount = matchup.map(TYPECALC.calc.effectCount);
-		count = effectCount.reduce(TYPECALC.calc.sumEffectiveness, {});
-		
 		console.log("Team");
 		console.log(team);
+				
+		// These are the steps which calc.typeCalc() do.
+		matchup = team.map(TYPECALC.calc.matchup);
 		console.log("Arrays of matchups");
 		console.log(matchup);
+
+		matchup = matchup.filter(function (el) {
+			return el;
+		});
+		console.log("Filtered Matchup");
+		console.log(matchup);
+		
+		effectCount = matchup.map(TYPECALC.calc.effectCount);
 		console.log("Each pokémon's effects count");
 		console.log(effectCount);
+
+		count = effectCount.reduce(TYPECALC.calc.sumEffectiveness, {});
 		console.log("Final result (total effects count)");
 		console.log(count);
 	}
@@ -89,32 +95,31 @@ TYPECALC.io = (function () {
 	
 	var createReport = function (totalResistsAndWeaks) {
 		var report = '';
-		var total = totalResistsAndWeaks;
+		var reportBody = '';
+		var total = totalResistsAndWeaks || {};
 		
 		// Must create a table with: noEffect, quarterEffect,
 		// halfEffect, normalEffect, doubleEffect and quadEffect
 		// If it's undefined, put the value 0.
 		
-		report += "<table>";
-		
-		report += total.noEffect ? total.noEffect : 0;
-		
-		report += total.quarterEffect ? total.quarterEffect : 0;
-		
-		report += total.halfEffect ? total.halfEffect : 0;
-		
-		report += total.normalEffect ? total.normalEffect : 0;
-		
-		report += total.doubleEffect ? total.doubleEffect : 0;
-		
-		report += total.quadEffect ? total.quadEffect : 0;
-		
-		report += "</table>";
+		reportBody += "<td>Total</td>";
+		reportBody += "<td>" + (total["quarterEffect"] ? total["quarterEffect"] : "0") + "</td>";
+		reportBody += "<td>" + (total["halfEffect"] ? total["halfEffect"] : "0") + "</td>";
+		reportBody += "<td>" + (total["noEffect"] ? total["noEffect"] : "0") + "</td>";
+		reportBody += "<td>" + (total["doubleEffect"] ? total["doubleEffect"] : "0") + "</td>";
+		reportBody += "<td>" + (total["quadEffect"] ? total["quadEffect"] : "0") + "</td>";
+
+		report += "<table class='center table'><thead><tr><th></th><th>Resistências 4x</th><th>Resistências 2x</th><th>Imunidades</th><th>Fraquezas 2x</th><th>Fraquezas 4x</th></tr></thead><tbody><tr>";
+		report += reportBody;	
+		report += "</tr></tbody></table>";
+
+		return report;
 	};
 	
 	return {
 		showResultsOnUi: showResultsOnUi,
-		walkTheTeam: walkTheTeam
+		walkTheTeam: walkTheTeam,
+		createReport: createReport
 	}
 }());
 
@@ -250,7 +255,7 @@ TYPECALC.calc = (function () {
 
 		// Stop here if the total weaks/resists of the team aren't needed.
 		if (options.partialCount) return count;
-		
+				
 		// Else, sum all of them.
 		return count.reduce(sumEffectiveness, {});
 	};
