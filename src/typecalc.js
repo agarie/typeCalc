@@ -10,14 +10,15 @@ var	TYPECALC = {
 	io: {},
 	calc: {},
 	engine: {},
-	calculate: function () {
+	calculate: function (opt) {
 		var team = [], totalResistsAndWeaks = {};
 		var report = '';
+		var options = opt || {};
 		
 		// Implementation of the calc steps
 		team = TYPECALC.io.walkTheTeam();
 				
-		totalResistsAndWeaks = TYPECALC.calc.typeCalc(team);
+		totalResistsAndWeaks = TYPECALC.calc.typeCalc(team, options);
 		report = TYPECALC.io.createReport(totalResistsAndWeaks);
 		
 		TYPECALC.io.showResultsOnUi(report, true);
@@ -244,20 +245,27 @@ TYPECALC.calc = (function () {
 	// halfEffect, normalEffect, doubleEffect and quadEffect. The values are the
 	// total number of occurences of each.
 	//
-	var	typeCalc = function (team, options) {
-		var count;
-		options = options || {};
+	var	typeCalc = function (team, opt) {
+		var resistWeaks = [];
+		var count = {};
+		var options = opt || {};
 
-		// Count is the number of weaks/resists of each pokémon.
-		count = team.map(matchup).filter(function (el) {
+		// Number of resists/weaks of each pokémon. Filter false values.
+		resistWeaks = team.map(matchup).filter(function (el) {
 			return el;
-		}).map(effectCount);
-
-		// Stop here if the total weaks/resists of the team aren't needed.
-		if (options.partialCount) return count;
-				
-		// Else, sum all of them.
-		return count.reduce(sumEffectiveness, {});
+		});
+		
+		// Decide between the total and each types number of resists/weaks.
+		if (options.totalCount) {
+			// Total number of resists/weaknesses.
+			count = resistWeaks.map(effectCount);
+			count = count.reduce(sumEffectiveness, {}); 
+			return count;
+		}
+		else {
+			// Return each type's number of resists/weaknesses.
+			// resistWeaks = 
+		}
 	};
 		
 	// Assumes that the input is an object of arrays

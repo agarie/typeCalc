@@ -14,7 +14,7 @@ The code uses strict mode and is tested with JsTestDriver. I intent to document 
 USE
 ===
 
-This software is made with JavaScript and can be used from any browser that supports it. Also, you can use this calculator or parts of it in your own projects, according to the chosen license (MIT License). Ah, you need [jQuery](http://jquery.com/).
+This software is made with JavaScript and can be used from any browser that supports it. Also, you can use this calculator or parts of it in your own projects, according to the chosen license (MIT License). Ah, you need [jQuery](http://jquery.com/) for interfacing with the UI.
 
 If you have any issues or troubles, please use the ['Issues'](https://github.com/mojambo/typecalc/issues) functionality from Github. I'll be glad to help, be it a feature requests or a bug report. If you know PT-BR, please contribute posting to our forum "[Reportar falha](http://mojambo.net/forum/viewforum.php?f=16&sid=5a4ab1bcd3fc399efb6af9c249519503)".
 
@@ -23,7 +23,8 @@ Please, let me know if you find this project interesting in some way. :)
 TO DO
 =====
 
-+ LOTS OF STUFF LOL
++ Implement a way to return each type's resists/weaks. This way, the user will have a better view of his team's information.
++ Create a CSS stylesheet with each type's "colors" to enable a better-looking view.
 
 LICENSE
 =======
