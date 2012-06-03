@@ -13,12 +13,11 @@ var	TYPECALC = {
 	calculate: function () {
 		var team = [], resistsAndWeaks = {};
 		var report = '';
-		var options = opt || {};
 		
 		// Implementation of the calc steps
 		team = TYPECALC.io.walkTheTeam();
 				
-		resistsAndWeaks = TYPECALC.calc.typeCalc(team, options);
+		resistsAndWeaks = TYPECALC.calc.typeCalc(team);
 				
 		report = TYPECALC.io.createReport(resistsAndWeaks);
 		
