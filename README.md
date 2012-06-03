@@ -23,8 +23,10 @@ Please, let me know if you find this project interesting in some way. :)
 TO DO
 =====
 
-+ Implement a way to return each type's resists/weaks. This way, the user will have a better view of his team's information.
-+ Create a CSS stylesheet with each type's "colors" to enable a better-looking view.
++ Use the CSS stylesheet with each type's "colors" to enable a better-looking view.
++ Filter 'only normalEffect' types from the results. They aren't very interesting for the team designer.
++ How to rank the types? Simply use (#weaks) - (#resists)?
++ Automatic calculation is better than using a button. We want instant response to our team changes.
 
 LICENSE
 =======

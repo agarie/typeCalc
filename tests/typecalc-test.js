@@ -38,21 +38,7 @@ TestCase("CalcTest", {
 	"test matchup should return correct effectiveness array": function () {
 		assertEquals(this.effectArray, this.calc.matchup(["fire"]));
 	},
-	
-	"test effectCount should return object": function () {
-		assertObject(this.calc.effectCount(this.effectArray));
-	},
-	
-	"test effectCount should return obj with non-zero properties": function () {
-		var count = {
-			halfEffect: 5,
-			normalEffect: 9,
-			doubleEffect: 3,
-		};
 		
-		assertEquals(count, this.calc.effectCount(this.effectArray));
-	},
-	
 	"test typeCalc should work properly without options object": function () {
 		var team = [];
 		
@@ -64,7 +50,7 @@ TestCase("CalcTest", {
 	"test typeCalc should return an array if partialCount is true": function () {
 		var team = [];
 		
-		for (var i = 0; i < 6; i++) {`
+		for (var i = 0; i < 6; i++) {
 			team.concat(this.effectArray);
 		}
 
