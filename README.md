@@ -27,6 +27,11 @@ TO DO
 + Filter 'only normalEffect' types from the results. They aren't very interesting for the team designer.
 + How to rank the types? Simply use (#weaks) - (#resists)?
 + Automatic calculation is better than using a button. We want instant response to our team changes.
++ Improve emphasis class for better readability of results.
++ Compress the table (or use fluid layout) for small screens.
++ Add capability of type names in other languages (pt-br).
++ Add autocomplete.
++ Remove transposition and vector dot product functions from typeCalc. They should be *somewhere* else.
 
 LICENSE
 =======
