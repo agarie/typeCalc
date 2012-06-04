@@ -107,8 +107,8 @@ TYPECALC.io = (function () {
 		var team = [];
 		
 		$.each(pkmn, function(index, value) {
-			type_1 = value.querySelector("input[name='type-1']").value;
-			type_2 = value.querySelector("input[name='type-2']").value;
+			type_1 = value.querySelector("input[name='type-1']").value.toLowerCase();
+			type_2 = value.querySelector("input[name='type-2']").value.toLowerCase();
 			
 			team.push([type_1, type_2]);
 		});
@@ -149,6 +149,17 @@ TYPECALC.io = (function () {
 		tmp.append("<th>Fraquezas 4x</th>");
 		
 		return tmp;
+	};
+	
+	var addEmphasisClassConditionally = function (value, className) {
+		className = className || 'emphasis';
+
+		if (value > 0) {
+			return "<td class='" + className + "'>" + value + "</td>";
+		}
+		else {
+			return "<td>" + value + "</td>";
+		}
 	};
 	
 	var createReport = function (resistsAndWeaks) {
@@ -202,11 +213,11 @@ TYPECALC.io = (function () {
 			tmp = $("<tr>");
 
 			tmp.append("<td>" + TYPES[index] + "</td>");
-			tmp.append("<td>" + obj.quarterEffect + "</td>");
-			tmp.append("<td>" + obj.halfEffect + "</td>");
-			tmp.append("<td>" + obj.noEffect + "</td>");
-			tmp.append("<td>" + obj.doubleEffect + "</td>");
-			tmp.append("<td>" + obj.quadEffect + "</td>");
+			tmp.append(addEmphasisClassConditionally(obj.quarterEffect));
+			tmp.append(addEmphasisClassConditionally(obj.halfEffect));
+			tmp.append(addEmphasisClassConditionally(obj.noEffect));
+			tmp.append(addEmphasisClassConditionally(obj.doubleEffect));
+			tmp.append(addEmphasisClassConditionally(obj.quadEffect));
 
 			reportBody.append(tmp);
 
